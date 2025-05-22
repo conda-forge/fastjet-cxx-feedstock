@@ -35,12 +35,9 @@ requirements:
       then:
         - python
         - cross-python_${{ target_platform }}
-    - if: build_platform != target_platform
-      then: gmp
-    - if: build_platform != target_platform
-      then: mpfr
-    - if: build_platform != target_platform
-      then: siscone
+        - gmp
+        - mpfr
+        - siscone
   host:
     - python
     - gmp
