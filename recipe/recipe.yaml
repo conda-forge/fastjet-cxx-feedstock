@@ -1,6 +1,6 @@
 context:
   name: "fastjet-cxx"
-  version: "3.4.3"
+  version: "3.5.0"
 
 package:
   name: ${{ name }}
@@ -8,7 +8,7 @@ package:
 
 source:
   url: https://gitlab.com/fastjet/fastjet/-/archive/fastjet-${{ version }}/fastjet-fastjet-${{ version }}.tar.gz
-  sha256: 8ce8b9be5cd0fba4f2fe914871eabe259dfa7524edf925635e20072cde2ae6a8
+  sha256: 67c314aec7899f098c9ec8fb2ca0c46a3b7700cbb756278ab4a6a02f34ba1dc9
   patches: 0001-use-conda-forge-siscone-for-plugin.patch
 
 build:
