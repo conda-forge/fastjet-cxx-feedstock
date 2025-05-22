@@ -12,7 +12,12 @@ source:
   patches: 0001-use-conda-forge-siscone-for-plugin.patch
 
 build:
-  number: 2
+  number: 0
+  script:
+    - cmake "${CMAKE_ARGS}" -DCMAKE_INSTALL_PREFIX="${PREFIX}" -DFASTJET_ENABLE_CGAL=ON -DFASTJET_ENABLE_PYTHON=ON -DFASTJET_USE_INSTALLED_SISCONE=ON -DFASTJET_PYTHON_PACKAGE_NAME="fastjet_cxx" -D FASTJET_USE_PYTHON_SITEARCH=ON -S . -B build
+    - cmake -LH build
+    - cmake --build build --parallel="${CPU_COUNT}"
+    - cmake --install build
   skip:
     - win
 
@@ -22,11 +27,10 @@ requirements:
   build:
     - ${{ stdlib('c') }}
     - ${{ compiler('cxx') }}
-    - automake
-    - libtool
+    - swig
+    - python
+    - cmake
     - make
-    - pkg-config
-    - gnuconfig
     - cgal
     - if: build_platform != target_platform
       then: siscone
