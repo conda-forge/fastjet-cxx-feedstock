@@ -45,6 +45,7 @@ requirements:
     - mpfr
     - siscone    
   run:
+    - python
     - siscone
 
 tests:
