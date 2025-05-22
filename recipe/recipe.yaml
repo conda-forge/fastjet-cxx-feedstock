@@ -52,7 +52,7 @@ tests:
       imports:
         - fastjet_cxx
       pip_check: true
-      python_version: ${{ PYTHON }}
+      python_version: ${{ python }}
   - script:
       - test -f $PREFIX/bin/fastjet-config
       - test -f $PREFIX/lib/libfastjet${SHLIB_EXT}
