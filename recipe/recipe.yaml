@@ -9,12 +9,11 @@ package:
 source:
   url: https://gitlab.com/fastjet/fastjet/-/archive/fastjet-${{ version }}/fastjet-fastjet-${{ version }}.tar.gz
   sha256: 67c314aec7899f098c9ec8fb2ca0c46a3b7700cbb756278ab4a6a02f34ba1dc9
-  patches: 0001-use-conda-forge-siscone-for-plugin.patch
 
 build:
   number: 0
   script:
-    - cmake "${CMAKE_ARGS}" -DCMAKE_INSTALL_PREFIX="${PREFIX}" -DFASTJET_ENABLE_CGAL=ON -DFASTJET_ENABLE_PYTHON=ON -DFASTJET_USE_INSTALLED_SISCONE=ON -DFASTJET_PYTHON_PACKAGE_NAME="fastjet_cxx" -S . -B build
+    - cmake "${CMAKE_ARGS}" -DCMAKE_INSTALL_PREFIX="${PREFIX}" -DFASTJET_ENABLE_ALLCXXPLUGINS=ON -DFASTJET_ENABLE_CGAL=ON -DFASTJET_ENABLE_PYTHON=ON -DFASTJET_USE_INSTALLED_SISCONE=ON -DFASTJET_PYTHON_PACKAGE_NAME="fastjet_cxx" -S . -B build
     - cmake -LH build
     - cmake --build build --parallel="${CPU_COUNT}"
     - cmake --install build
@@ -104,7 +103,7 @@ tests:
       - ./13-boosted_top < data/boosted_top_event.dat
       - $CXX 14-groomers.cc -o 14-groomers $CXXFLAGS $LDFLAGS -lfastjettools -lfastjet
       - ./14-groomers < data/boosted_top_event.dat
-      - python3 -c "import fastjet_cxx; print(fastjet)"
+      - python3 -c "import fastjet_cxx; print(fastjet_cxx)"
       - python3 -c "import fastjet_cxx as fj; jetdef=fj.JetDefinition(fj.antikt_algorithm, 0.4); jets=jetdef([fj.PtYPhiM(100.0, 0.1, 0.1),fj.PtYPhiM(100.0, 0.2, 0.2)]); print(jets[0])"
 
     files:
