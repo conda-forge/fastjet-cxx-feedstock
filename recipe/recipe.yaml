@@ -28,10 +28,11 @@ requirements:
     - ${{ stdlib('c') }}
     - ${{ compiler('cxx') }}
     - swig
-    - python
     - cmake
     - make
     - cgal
+    - if: build_platform != target_platform
+      then: python
     - if: build_platform != target_platform
       then: gmp
     - if: build_platform != target_platform
@@ -39,9 +40,10 @@ requirements:
     - if: build_platform != target_platform
       then: siscone
   host:
-    - siscone
+    - python
     - gmp
     - mpfr
+    - siscone    
   run:
     - siscone
 
