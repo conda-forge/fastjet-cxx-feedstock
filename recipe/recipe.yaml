@@ -106,8 +106,8 @@ tests:
       - ./13-boosted_top < data/boosted_top_event.dat
       - $CXX 14-groomers.cc -o 14-groomers $CXXFLAGS $LDFLAGS -lfastjettools -lfastjet
       - ./14-groomers < data/boosted_top_event.dat
-      - ${{ PYTHON }} -c "import fastjet_cxx; print(fastjet_cxx)"
-      - ${{ PYTHON }} -c "import fastjet_cxx as fj; jetdef=fj.JetDefinition(fj.antikt_algorithm, 0.4); jets=jetdef([fj.PtYPhiM(100.0, 0.1, 0.1),fj.PtYPhiM(100.0, 0.2, 0.2)]); print(jets[0])"
+      - python -c "import fastjet_cxx; print(fastjet_cxx)"
+      - python -c "import fastjet_cxx as fj; jetdef=fj.JetDefinition(fj.antikt_algorithm, 0.4); jets=jetdef([fj.PtYPhiM(100.0, 0.1, 0.1),fj.PtYPhiM(100.0, 0.2, 0.2)]); print(jets[0])"
 
     files:
       source:
