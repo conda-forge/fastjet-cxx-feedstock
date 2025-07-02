@@ -1,28 +1,32 @@
-From faa6fb10712c79b39766ae720a46190b0ad6eea0 Mon Sep 17 00:00:00 2001
+From 0f25d27a8eb9f9e8e1ee3d069690236adf6fe463 Mon Sep 17 00:00:00 2001
 From: Lindsey Gray <lindsey.gray@gmail.com>
 Date: Mon, 30 Jun 2025 13:12:40 -0500
 Subject: [PATCH] patch for python extension cross-compilation on conda
 
 ---
- pyinterface/CMakeLists.txt | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ pyinterface/CMakeLists.txt | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/pyinterface/CMakeLists.txt b/pyinterface/CMakeLists.txt
-index e97b4b58..3a26fcad 100644
+index e97b4b58..16997460 100644
 --- a/pyinterface/CMakeLists.txt
 +++ b/pyinterface/CMakeLists.txt
-@@ -9,7 +9,10 @@ else()
+@@ -9,7 +9,14 @@ else()
    set(DEV_MODULE Development.Module)
  endif()
  
 -find_package(Python 3.8 COMPONENTS Interpreter ${DEV_MODULE} REQUIRED)
-+set(CFRPMP_TEMP "${CMAKE_FIND_ROOT_PATH_MODE_PROGRAM}")
-+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM ONLY)
-+find_package(Python 3.8 COMPONENTS ${DEV_MODULE} REQUIRED)
-+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM "${CFRPMP_TEMP}")
++if(NOT WIN32)
++  set(CFRPMP_TEMP "${CMAKE_FIND_ROOT_PATH_MODE_PROGRAM}")
++  set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM ONLY)
++  find_package(Python 3.8 COMPONENTS ${DEV_MODULE} REQUIRED)
++  set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM "${CFRPMP_TEMP}")
++else()
++  find_package(Python 3.8 COMPONENTS Interpreter ${DEV_MODULE} REQUIRED)
++endif()
  
  set_property(SOURCE fastjet.i PROPERTY CPLUSPLUS ON)
  set_property(SOURCE fastjet.i PROPERTY SWIG_MODULE_NAME __init__)
 -- 
-2.39.5 (Apple Git-154)
+2.49.0
 
