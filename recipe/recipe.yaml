@@ -1,6 +1,7 @@
 context:
   name: "fastjet-cxx"
   version: "3.5.1"
+  siscone_version: "3.1.2"
   win_cgal: ${{ "OFF" if win and arm64 else "ON" }}
 
 recipe:
@@ -15,7 +16,7 @@ source:
   patches: 0001-patch-for-python-extension-cross-compilation-on-cond.patch
 
 build:
-  number: 0
+  number: 1
 
 outputs:
   - package:
@@ -44,7 +45,8 @@ outputs:
       host:
         - if: not (win and arm64)
           then: cgal-cpp
-        - siscone
+        # check for siscone version changes when fastjet is updated!
+        - siscone ==${{ siscone_version }}
 
     tests:
       - package_contents:
@@ -221,12 +223,11 @@ outputs:
           then:
             - python
             - cross-python_${{ target_platform }}
-            - fastjet-cxx
       host:
         - python
         - if: not (win and arm64)
           then: cgal-cpp
-        - fastjet-cxx
+        - fastjet-cxx ==${{ version }}
       run:
         - python
 
