@@ -23,6 +23,14 @@ outputs:
       name: ${{ name }}
 
     build:
+      files:
+        - if: unix
+          then:
+            - lib/libfastjet*.so*
+            - lib/libfastjet*.dylib
+        - if: win
+          then:
+            - Library/bin/fastjet*.dll
       script:
         - if: win
           then: cmake %CMAKE_ARGS% -DFASTJET_ENABLE_DEBUG=OFF -DFASTJET_ENABLE_ALLCXXPLUGINS=ON -DFASTJET_ENABLE_CGAL=${{ win_cgal }} -DFASTJET_USE_INSTALLED_SISCONE=ON -DFASTJET_ENABLE_PYTHON=OFF -DCGAL_CMAKE_EXACT_NT_BACKEND=BOOST_BACKEND -DCGAL_DISABLE_GMP=ON -S . -B build
@@ -49,6 +57,94 @@ outputs:
 
     tests:
       - package_contents:
+          lib:
+            - if: not win
+              then:
+                - fastjet
+                - fastjetplugins
+                - fastjettools
+          bin:
+            - if: win
+              then:
+                - fastjet.dll
+                - fastjetplugins.dll
+                - fastjettools.dll
+      - if: win
+        then:
+          script:
+            - cd example
+            - ..\build\example\Release\fastjet_example.exe < .\data\single-event.dat
+            - ..\build\example\Release\fastjet_areas < .\data\single-event.dat
+            - ..\build\example\Release\01-basic.exe < .\data\single-event.dat
+            - ..\build\example\Release\02-jetdef.exe < .\data\single-event.dat
+            - ..\build\example\Release\03-plugin.exe < .\data\single-event.dat
+            - ..\build\example\Release\03-plugin.exe < .\data\single-event.dat
+            - ..\build\example\Release\04-constituents.exe < .\data\single-event.dat
+            - ..\build\example\Release\05-eplus_eminus.exe < .\data\single-ee-event.dat
+            - ..\build\example\Release\06-area.exe < .\data\single-event.dat
+            - ..\build\example\Release\07-subtraction.exe < .\data\Pythia-Zp2jets-lhc-pileup-1ev.dat
+            - ..\build\example\Release\08-selector.exe < .\data\single-event.dat
+            - ..\build\example\Release\09-user_info.exe < .\data\Pythia-dijet-ptmin100-lhc-pileup-1ev.dat
+            - ..\build\example\Release\10-subjets.exe < .\data\single-event.dat
+            - ..\build\example\Release\11-filter.exe < .\data\single-event.dat
+            - ..\build\example\Release\12-boosted_higgs.exe < .\data\HZ-event-Hmass115.dat
+            - ..\build\example\Release\13-boosted_top.exe < .\data\boosted_top_event.dat
+            - ..\build\example\Release\14-groomers.exe < .\data\boosted_top_event.dat
+          files:
+            source:
+              - example/data/single-event.dat
+              - example/data/single-ee-event.dat
+              - example/data/Pythia-Zp2jets-lhc-pileup-1ev.dat
+              - example/data/Pythia-dijet-ptmin100-lhc-pileup-1ev.dat
+              - example/data/HZ-event-Hmass115.dat
+              - example/data/boosted_top_event.dat
+              - build/example/Release/fastjet_example.exe
+              - build/example/Release/fastjet_areas.exe
+              - build/example/Release/01-basic.exe
+              - build/example/Release/02-jetdef.exe
+              - build/example/Release/03-plugin.exe
+              - build/example/Release/04-constituents.exe
+              - build/example/Release/05-eplus_eminus.exe
+              - build/example/Release/06-area.exe
+              - build/example/Release/07-subtraction.exe
+              - build/example/Release/08-selector.exe
+              - build/example/Release/09-user_info.exe
+              - build/example/Release/10-subjets.exe
+              - build/example/Release/11-filter.exe
+              - build/example/Release/12-boosted_higgs.exe
+              - build/example/Release/13-boosted_top.exe
+              - build/example/Release/14-groomers.exe
+
+  - package:
+      name: ${{ name }}-devel
+
+    build:
+      files:
+        - if: unix
+          then:
+            - bin/fastjet-config
+            - include/fastjet/**
+            - lib/cmake/fastjet/**
+        - if: win
+          then:
+            - Library/bin/fastjet-config*
+            - Library/include/fastjet/**
+            - Library/lib/cmake/fastjet/**
+            - Library/lib/fastjet*.lib
+
+    requirements:
+      run_exports:
+        - ${{ pin_subpackage('fastjet-cxx', upper_bound='x.x') }}
+      host:
+        - ${{ pin_subpackage('fastjet-cxx', exact=True) }}
+      run:
+        - ${{ pin_subpackage('fastjet-cxx', exact=True) }}
+        - if: not (win and arm64)
+          then: cgal-cpp
+        - siscone
+
+    tests:
+      - package_contents:
           files:
             - if: win
               then: Library/lib/cmake/fastjet/fastjet*.cmake
@@ -58,45 +154,17 @@ outputs:
             - fastjet/*.hh
             - fastjet/internal/*.hh
             - fastjet/tools/*.hh
+          bin:
+            - fastjet-config
           lib:
             - if: win
               then:
                 - fastjet.lib
                 - fastjetplugins.lib
                 - fastjettools.lib
-              else:
-                - fastjet
-                - fastjetplugins
-                - fastjettools
-          bin:
-            - fastjet-config
-            - if: win
-              then:
-                - fastjet.dll
-                - fastjetplugins.dll
-                - fastjettools.dll
       - script:
-          - if: win
+          - if: not win
             then:
-              - cd example
-              - ..\build\example\Release\fastjet_example.exe < .\data\single-event.dat
-              - ..\build\example\Release\fastjet_areas < .\data\single-event.dat
-              - ..\build\example\Release\01-basic.exe < .\data\single-event.dat
-              - ..\build\example\Release\02-jetdef.exe < .\data\single-event.dat
-              - ..\build\example\Release\03-plugin.exe < .\data\single-event.dat
-              - ..\build\example\Release\03-plugin.exe < .\data\single-event.dat
-              - ..\build\example\Release\04-constituents.exe < .\data\single-event.dat
-              - ..\build\example\Release\05-eplus_eminus.exe < .\data\single-ee-event.dat
-              - ..\build\example\Release\06-area.exe < .\data\single-event.dat
-              - ..\build\example\Release\07-subtraction.exe < .\data\Pythia-Zp2jets-lhc-pileup-1ev.dat
-              - ..\build\example\Release\08-selector.exe < .\data\single-event.dat
-              - ..\build\example\Release\09-user_info.exe < .\data\Pythia-dijet-ptmin100-lhc-pileup-1ev.dat
-              - ..\build\example\Release\10-subjets.exe < .\data\single-event.dat
-              - ..\build\example\Release\11-filter.exe < .\data\single-event.dat
-              - ..\build\example\Release\12-boosted_higgs.exe < .\data\HZ-event-Hmass115.dat
-              - ..\build\example\Release\13-boosted_top.exe < .\data\boosted_top_event.dat
-              - ..\build\example\Release\14-groomers.exe < .\data\boosted_top_event.dat
-            else:
               - fastjet-config --help
               - fastjet-config --version
               - fastjet-config --prefix
@@ -151,45 +219,25 @@ outputs:
             - example/data/Pythia-dijet-ptmin100-lhc-pileup-1ev.dat
             - example/data/HZ-event-Hmass115.dat
             - example/data/boosted_top_event.dat
-            - if: win
-              then:
-                - build/example/Release/fastjet_example.exe
-                - build/example/Release/fastjet_areas.exe
-                - build/example/Release/01-basic.exe
-                - build/example/Release/02-jetdef.exe
-                - build/example/Release/03-plugin.exe
-                - build/example/Release/04-constituents.exe
-                - build/example/Release/05-eplus_eminus.exe
-                - build/example/Release/06-area.exe
-                - build/example/Release/07-subtraction.exe
-                - build/example/Release/08-selector.exe
-                - build/example/Release/09-user_info.exe
-                - build/example/Release/10-subjets.exe
-                - build/example/Release/11-filter.exe
-                - build/example/Release/12-boosted_higgs.exe
-                - build/example/Release/13-boosted_top.exe
-                - build/example/Release/14-groomers.exe
-              else:
-                - example/fastjet_example.cc
-                - example/fastjet_areas.cc
-                - example/01-basic.cc
-                - example/02-jetdef.cc
-                - example/03-plugin.cc
-                - example/04-constituents.cc
-                - example/05-eplus_eminus.cc
-                - example/06-area.cc
-                - example/07-subtraction.cc
-                - example/08-selector.cc
-                - example/09-user_info.cc
-                - example/10-subjets.cc
-                - example/11-filter.cc
-                - example/12-boosted_higgs.cc
-                - example/13-boosted_top.cc
-                - example/14-groomers.cc
+            - example/fastjet_example.cc
+            - example/fastjet_areas.cc
+            - example/01-basic.cc
+            - example/02-jetdef.cc
+            - example/03-plugin.cc
+            - example/04-constituents.cc
+            - example/05-eplus_eminus.cc
+            - example/06-area.cc
+            - example/07-subtraction.cc
+            - example/08-selector.cc
+            - example/09-user_info.cc
+            - example/10-subjets.cc
+            - example/11-filter.cc
+            - example/12-boosted_higgs.cc
+            - example/13-boosted_top.cc
+            - example/14-groomers.cc
         requirements:
           run:
-            - if: not win
-              then: ${{ compiler('cxx') }}
+            - ${{ compiler('cxx') }}
 
   - package:
       name: ${{ name }}-python
@@ -247,18 +295,6 @@ outputs:
           site_packages:
             - fastjet_cxx
       - script:
-          - if: not win
-            then:
-              - fastjet-config --help
-              - fastjet-config --version
-              - fastjet-config --prefix
-              - fastjet-config --cxxflags
-              - fastjet-config --libs
-              - fastjet-config --list-plugins
-              - fastjet-config --libs --plugins
-              - fastjet-config --config
-              - fastjet-config --pythonpath
-
           - python -c "import fastjet_cxx as fj; jetdef=fj.JetDefinition(fj.antikt_algorithm, 0.4); jets=jetdef([fj.PtYPhiM(100.0, 0.1, 0.1),fj.PtYPhiM(100.0, 0.2, 0.2)]); print(jets[0])"
 
 about:
