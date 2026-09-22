@@ -14,6 +14,7 @@ source:
   sha256: 8b9ffb6037ad1891ad2331294f81cd7d582848d3fdd3867a249978f5090bbc3b
   patches:
     - 0001-patch-for-python-extension-cross-compilation-on-cond.patch
+    - 0002-Forward-CMake-BUILD_SHARED_LIBS-as-HAS_SHARED-to-fastjet-config.patch
 
 build:
   number: 6
@@ -190,6 +191,7 @@ outputs:
               - fastjet-config --list-plugins
               - fastjet-config --libs --plugins
               - fastjet-config --config
+              - fastjet-config --libs --plugins --rpath=no
 
               - cd example/
               - $CXX fastjet_example.cc -o fastjet_example $CXXFLAGS $LDFLAGS -lfastjet
@@ -227,6 +229,11 @@ outputs:
               - ./13-boosted_top < data/boosted_top_event.dat
               - $CXX 14-groomers.cc -o 14-groomers $CXXFLAGS $LDFLAGS -lfastjettools -lfastjet
               - ./14-groomers < data/boosted_top_event.dat
+              - mkdir cmake-smoke
+              - echo 'cmake_minimum_required(VERSION 3.15)' > cmake-smoke/CMakeLists.txt
+              - echo 'project(smoke CXX)' >> cmake-smoke/CMakeLists.txt
+              - echo 'find_package(fastjet REQUIRED)' >> cmake-smoke/CMakeLists.txt
+              - cmake -S cmake-smoke -B cmake-smoke/build
 
         files:
           source:
@@ -255,6 +262,9 @@ outputs:
         requirements:
           run:
             - ${{ compiler('cxx') }}
+            - cmake
+            - if: unix
+              then: make
 
   - package:
       name: ${{ name }}-python
@@ -315,6 +325,7 @@ outputs:
           - if: not win
             then:
               - fastjet-config --pythonpath
+              - fastjet-config --libs --plugins --rpath=no
 
           - python -c "import fastjet_cxx as fj; jetdef=fj.JetDefinition(fj.antikt_algorithm, 0.4); jets=jetdef([fj.PtYPhiM(100.0, 0.1, 0.1),fj.PtYPhiM(100.0, 0.2, 0.2)]); print(jets[0])"
 
