@@ -84,6 +84,7 @@ Current release info
 | Name | Downloads | Version | Platforms |
 | --- | --- | --- | --- |
 | [![Conda Recipe](https://img.shields.io/badge/recipe-fastjet--cxx-green.svg)](https://anaconda.org/conda-forge/fastjet-cxx) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/fastjet-cxx.svg)](https://anaconda.org/conda-forge/fastjet-cxx) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/fastjet-cxx.svg)](https://anaconda.org/conda-forge/fastjet-cxx) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/fastjet-cxx.svg)](https://anaconda.org/conda-forge/fastjet-cxx) |
+| [![Conda Recipe](https://img.shields.io/badge/recipe-fastjet--cxx--devel-green.svg)](https://anaconda.org/conda-forge/fastjet-cxx-devel) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/fastjet-cxx-devel.svg)](https://anaconda.org/conda-forge/fastjet-cxx-devel) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/fastjet-cxx-devel.svg)](https://anaconda.org/conda-forge/fastjet-cxx-devel) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/fastjet-cxx-devel.svg)](https://anaconda.org/conda-forge/fastjet-cxx-devel) |
 | [![Conda Recipe](https://img.shields.io/badge/recipe-fastjet--cxx--python-green.svg)](https://anaconda.org/conda-forge/fastjet-cxx-python) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/fastjet-cxx-python.svg)](https://anaconda.org/conda-forge/fastjet-cxx-python) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/fastjet-cxx-python.svg)](https://anaconda.org/conda-forge/fastjet-cxx-python) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/fastjet-cxx-python.svg)](https://anaconda.org/conda-forge/fastjet-cxx-python) |
 
 Installing fastjet-cxx
@@ -103,7 +104,7 @@ How to use
 <summary>With conda</summary>
 
 ```
-conda install fastjet-cxx fastjet-cxx-python
+conda install fastjet-cxx fastjet-cxx-devel fastjet-cxx-python
 ```
 
 </details>
@@ -112,7 +113,7 @@ conda install fastjet-cxx fastjet-cxx-python
 <summary>With mamba</summary>
 
 ```
-mamba install fastjet-cxx fastjet-cxx-python
+mamba install fastjet-cxx fastjet-cxx-devel fastjet-cxx-python
 ```
 
 </details>
@@ -122,9 +123,9 @@ mamba install fastjet-cxx fastjet-cxx-python
 
 ```
 # for adding to your local project
-pixi add fastjet-cxx fastjet-cxx-python
+pixi add fastjet-cxx fastjet-cxx-devel fastjet-cxx-python
 # for installing globally
-pixi global install fastjet-cxx fastjet-cxx-python
+pixi global install fastjet-cxx fastjet-cxx-devel fastjet-cxx-python
 ```
 
 </details>
