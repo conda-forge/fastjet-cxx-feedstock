@@ -15,6 +15,7 @@ source:
   patches:
     - 0001-patch-for-python-extension-cross-compilation-on-cond.patch
     - 0002-Forward-CMake-BUILD_SHARED_LIBS-as-HAS_SHARED-to-fastjet-config.patch
+    - 0003-fastjet-config-locate-installed-fastjet_cxx-for-pythonpath.patch
 
 build:
   number: 6
@@ -192,6 +193,8 @@ outputs:
               - fastjet-config --libs --plugins
               - fastjet-config --config
               - fastjet-config --libs --plugins --rpath=no
+              - test -z "$(fastjet-config --pythonpath)"
+              - fastjet-config --list-plugins | grep SISCone
 
               - cd example/
               - $CXX fastjet_example.cc -o fastjet_example $CXXFLAGS $LDFLAGS -lfastjet
@@ -270,10 +273,6 @@ outputs:
       name: ${{ name }}-python
 
     build:
-      # clobber existing fastjet-config from fastjet-cxx
-      # c.f. https://rattler.build/latest/build_options/#always-include-and-always-copy-files
-      always_include_files:
-        - bin/fastjet-config
       script:
         - if: win
           # py3.15 moved Windows site-packages to lib/python/site-packages; SP_DIR tracks it (conda-forge/fastjet-cxx-feedstock#29)
@@ -316,18 +315,25 @@ outputs:
           python_version: ${{ python }}
       - package_contents:
           files:
-            - if: win
-              then: "{Lib,lib/python}/site-packages/fastjet_cxx/_fastjet_swig.*.pyd"
-              else: lib/python*/site-packages/fastjet_cxx/_fastjet_swig.*.so
+            exists:
+              - if: win
+                then: "{Lib,lib/python}/site-packages/fastjet_cxx/_fastjet_swig.*.pyd"
+                else: lib/python*/site-packages/fastjet_cxx/_fastjet_swig.*.so
+            not_exists:
+              - bin/fastjet-config
+              - Library/bin/fastjet-config
           site_packages:
             - fastjet_cxx
       - script:
           - if: not win
             then:
-              - fastjet-config --pythonpath
               - fastjet-config --libs --plugins --rpath=no
+              - test "$(fastjet-config --pythonpath)" = "$(python -c 'import os, fastjet_cxx; print(os.path.dirname(os.path.dirname(os.path.abspath(fastjet_cxx.__file__))))')"
 
           - python -c "import fastjet_cxx as fj; jetdef=fj.JetDefinition(fj.antikt_algorithm, 0.4); jets=jetdef([fj.PtYPhiM(100.0, 0.1, 0.1),fj.PtYPhiM(100.0, 0.2, 0.2)]); print(jets[0])"
+        requirements:
+          run:
+            - ${{ pin_subpackage('fastjet-cxx-devel', exact=True) }}
 
 about:
   homepage: https://gitlab.com/fastjet/fastjet

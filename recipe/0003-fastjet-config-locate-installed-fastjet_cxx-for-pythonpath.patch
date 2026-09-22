@@ -1,0 +1,31 @@
+From: Lindsey Gray <lindsey.gray@gmail.com>
+Subject: [PATCH] fastjet-config: locate an installed fastjet_cxx module for --pythonpath
+
+When fastjet is built without the Python bindings the generated script has
+empty pyexecdir/pythondir. The conda fastjet-cxx-devel package is such a build
+and is the only package shipping fastjet-config, so answer --pythonpath by
+asking the interpreter installed next to the script where fastjet_cxx lives;
+empty when there is no interpreter or no module.
+
+---
+--- a/fastjet-config.in
++++ b/fastjet-config.in
+@@ -409,6 +409,18 @@
+         incl1=@pyexecdir@
+         # one for the fastjet module
+         incl2=@pythondir@
++        # Built without the bindings (the conda fastjet-cxx-devel package): report the
++        # fastjet_cxx module installed in this prefix, found through the interpreter that
++        # lives next to this script; empty when there is none.
++        if [ "x$incl1$incl2" = "x" ]; then
++            for _py in "$(dirname "$0")/python3" "$(dirname "$0")/python"; do
++                if [ -x "$_py" ]; then
++                    incl1=$("$_py" -c 'import os, fastjet_cxx; print(os.path.dirname(os.path.dirname(os.path.abspath(fastjet_cxx.__file__))))' 2>/dev/null)
++                    incl2=$incl1
++                    break
++                fi
++            done
++        fi
+         if [ "x$incl1" = "x$incl2" ]; then
+             echo "$incl1"
+         else 
