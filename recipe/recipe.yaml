@@ -16,7 +16,7 @@ source:
     - 0001-patch-for-python-extension-cross-compilation-on-cond.patch
 
 build:
-  number: 3
+  number: 4
 
 outputs:
   - package:
