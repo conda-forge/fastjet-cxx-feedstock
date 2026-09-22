@@ -290,11 +290,13 @@ outputs:
             - python
             - cross-python_${{ target_platform }}
             - fastjet-cxx
+            - fastjet-cxx-devel
       host:
         - python
         - if: not (win and arm64)
           then: cgal-cpp
         - fastjet-cxx
+        - ${{ pin_subpackage('fastjet-cxx-devel', exact=True) }}
       run:
         - python
 
@@ -312,6 +314,10 @@ outputs:
           site_packages:
             - fastjet_cxx
       - script:
+          - if: not win
+            then:
+              - fastjet-config --pythonpath
+
           - python -c "import fastjet_cxx as fj; jetdef=fj.JetDefinition(fj.antikt_algorithm, 0.4); jets=jetdef([fj.PtYPhiM(100.0, 0.1, 0.1),fj.PtYPhiM(100.0, 0.2, 0.2)]); print(jets[0])"
 
 about:
