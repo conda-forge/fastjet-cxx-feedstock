@@ -1,6 +1,6 @@
 context:
   name: "fastjet-cxx"
-  version: "3.5.1"
+  version: "3.5.2"
   win_cgal: ${{ "OFF" if win and arm64 else "ON" }}
 
 recipe:
@@ -11,14 +11,14 @@ recipe:
 
 source:
   url: https://gitlab.com/fastjet/fastjet/-/archive/fastjet-${{ version }}/fastjet-fastjet-${{ version }}.tar.gz
-  sha256: 8b9ffb6037ad1891ad2331294f81cd7d582848d3fdd3867a249978f5090bbc3b
+  sha256: b04d8431656f8dad0a555fb90e999b0d99b2071881114508997a1ee9b58c7b90
   patches:
     - 0001-patch-for-python-extension-cross-compilation-on-cond.patch
     - 0002-Forward-CMake-BUILD_SHARED_LIBS-as-HAS_SHARED-to-fastjet-config.patch
     - 0003-fastjet-config-locate-installed-fastjet_cxx-for-pythonpath.patch
 
 build:
-  number: 6
+  number: 0
 
 outputs:
   - package:
@@ -276,8 +276,8 @@ outputs:
       script:
         - if: win
           # py3.15 moved Windows site-packages to lib/python/site-packages; SP_DIR tracks it (conda-forge/fastjet-cxx-feedstock#29)
-          then: cmake %CMAKE_ARGS% -DFASTJET_ENABLE_DEBUG=OFF -DFASTJET_ENABLE_ALLCXXPLUGINS=ON -DFASTJET_ENABLE_CGAL=${{ win_cgal }} -DFASTJET_USE_INSTALLED_SISCONE=ON -DFASTJET_ENABLE_PYTHON=ON -DFASTJET_PYINTERFACE_ONLY=ON -DFASTJET_CUSTOM_PYTHON_INSTALL="%SP_DIR%"
-            -DFASTJET_PYTHON_PACKAGE_NAME="fastjet_cxx" -DPython_EXECUTABLE=${{ PYTHON }} -DCGAL_CMAKE_EXACT_NT_BACKEND=BOOST_BACKEND -DCGAL_DISABLE_GMP=ON -S . -B build
+          then: cmake %CMAKE_ARGS% -DFASTJET_ENABLE_DEBUG=OFF -DFASTJET_ENABLE_ALLCXXPLUGINS=ON -DFASTJET_ENABLE_CGAL=${{ win_cgal }} -DFASTJET_USE_INSTALLED_SISCONE=ON -DFASTJET_ENABLE_PYTHON=ON -DFASTJET_PYINTERFACE_ONLY=ON -DFASTJET_CUSTOM_PYTHON_INSTALL="%SP_DIR%" -DFASTJET_PYTHON_PACKAGE_NAME="fastjet_cxx" 
+            -DPython_EXECUTABLE=${{ PYTHON }} -DCGAL_CMAKE_EXACT_NT_BACKEND=BOOST_BACKEND -DCGAL_DISABLE_GMP=ON -S . -B build
           else: cmake ${CMAKE_ARGS} -DFASTJET_BUILD_EXAMPLES=OFF -DFASTJET_ENABLE_DEBUG=OFF -DFASTJET_ENABLE_ALLCXXPLUGINS=ON -DFASTJET_ENABLE_CGAL=ON -DFASTJET_USE_INSTALLED_SISCONE=ON -DFASTJET_ENABLE_PYTHON=ON -DFASTJET_PYINTERFACE_ONLY=ON -DFASTJET_PYTHON_PACKAGE_NAME="fastjet_cxx" -DPython_EXECUTABLE=${{ PYTHON }}
             -DCGAL_CMAKE_EXACT_NT_BACKEND=BOOST_BACKEND -DCGAL_DISABLE_GMP=ON -S . -B build
         - cmake -LH build
