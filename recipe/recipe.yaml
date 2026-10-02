@@ -17,7 +17,7 @@ source:
     - 0003-fastjet-config-locate-installed-fastjet_cxx-for-pythonpath.patch
 
 build:
-  number: 0
+  number: 1
 
 outputs:
   - package:
@@ -54,7 +54,7 @@ outputs:
       host:
         - if: not (win and arm64)
           then: cgal-cpp
-        - siscone
+        - siscone-devel
 
     tests:
       - package_contents:
@@ -154,12 +154,12 @@ outputs:
       host:
         - if: not (win and arm64)
           then: cgal-cpp
-        - siscone
+        - siscone-devel
       run:
         - ${{ pin_subpackage('fastjet-cxx', exact=True) }}
         - if: not (win and arm64)
           then: cgal-cpp
-        - siscone
+        - siscone-devel
 
     tests:
       - package_contents:
