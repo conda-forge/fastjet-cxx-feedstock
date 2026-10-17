@@ -1,6 +1,6 @@
 context:
   name: "fastjet-cxx"
-  version: "3.5.2"
+  version: "3.5.3"
   win_cgal: ${{ "OFF" if win and arm64 else "ON" }}
 
 recipe:
@@ -11,13 +11,13 @@ recipe:
 
 source:
   url: https://gitlab.com/fastjet/fastjet/-/archive/fastjet-${{ version }}/fastjet-fastjet-${{ version }}.tar.gz
-  sha256: b04d8431656f8dad0a555fb90e999b0d99b2071881114508997a1ee9b58c7b90
+  sha256: f0dd263da150b3a8cf7ecc5f60163b5aac32ef8c35c495d9f454fe6f40b77857
   patches:
     - 0001-patch-for-python-extension-cross-compilation-on-cond.patch
     - 0003-fastjet-config-locate-installed-fastjet_cxx-for-pythonpath.patch
 
 build:
-  number: 1
+  number: 0
 
 outputs:
   - package:
